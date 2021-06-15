@@ -1,0 +1,40 @@
+{
+	"name": "shunhua/laravel-shoppingcart",
+	"description": "Shopping cart for Laravel Application.",
+	"keywords": [
+		"shopping cart",
+		"shopping",
+		"laravel"
+	],
+	"authors": [
+		{
+			"name": "shunhua",
+			"email": "2399315737@qq.com"
+		}
+	],
+	"require": {
+		"php": ">=7.0"
+	},
+	"require-dev": {
+		"mockery/mockery": "~1.0",
+		"phpunit/phpunit": "~7.0",
+		"orchestra/testbench": "~3.6",
+		"orchestra/database": "~3.6"
+	},
+	"autoload": {
+		"psr-4": {
+			"iBrand\\Shoppingcart\\": "src/"
+		}
+	},
+	"license": "MIT",
+	"extra": {
+		"laravel": {
+			"providers": [
+				"iBrand\\Shoppingcart\\ServiceProvider"
+			],
+			"aliases": {
+				"Cart": "iBrand\\Shoppingcart\\Facade"
+			}
+		}
+	}
+}
