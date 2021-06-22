@@ -23,11 +23,12 @@ class CreateShoppingCartTable extends Migration
         if (!Schema::hasTable('shopping_cart')) {
 
             Schema::create('shopping_cart', function (Blueprint $table) {
+                $table->bigIncrements('id')->autoIncrement()->comment('The ID.');
                 $table->string('key');
                 $table->string('__raw_id');
                 $table->string('guard')->nullable();
                 $table->integer('user_id')->nullable();
-                $table->integer('id');
+                $table->integer('product_id');
                 $table->string('name');
                 $table->integer('qty');
                 $table->decimal('price');
@@ -36,6 +37,7 @@ class CreateShoppingCartTable extends Migration
                 $table->string('type')->nullable();
                 $table->string('status')->nullable();
                 $table->text('attributes')->nullable();
+                $table->integer('parent_id')->default(0)->nullable();
                 $table->primary(['key', '__raw_id']);
                 $table->nullableTimestamps();
             });

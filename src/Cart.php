@@ -117,13 +117,12 @@ class Cart
      *
      * @return string
      */
-    public function add($id, $name = null, $qty = null, $price = null, array $attributes = [])
+    public function add($product_id, $name = null, $qty = null, $price = null, $parent_id = 0, array $attributes = [])
     {
         $cart = $this->getCart();
-
         $this->event->dispatch('cart.adding', [$attributes, $cart]);
 
-        $row = $this->addRow($id, $name, $qty, $price, $attributes);
+        $row = $this->addRow($product_id, $name, $qty, $price, $parent_id, $attributes);
 
         $this->event->dispatch('cart.added', [$attributes, $cart]);
 
@@ -357,7 +356,7 @@ class Cart
      *
      * @return string
      */
-    protected function addRow($id, $name, $qty, $price, array $attributes = [])
+    protected function addRow($product_id, $name, $qty, $price, $parent_id, array $attributes = [])
     {
         if (!is_numeric($qty) || $qty < 1) {
             throw new Exception('Invalid quantity.');
@@ -369,12 +368,12 @@ class Cart
 
         $cart = $this->getCart();
 
-        $rawId = $this->generateRawId($id, $attributes);
+        $rawId = $this->generateRawId($product_id, $attributes);
 
         if ($row = $cart->get($rawId)) {
             $row = $this->updateQty($rawId, $row->qty + $qty);
         } else {
-            $row = $this->insertRow($rawId, $id, $name, $qty, $price, $attributes);
+            $row = $this->insertRow($rawId, $product_id, $name, $qty, $price, $parent_id, $attributes);
         }
 
         return $row;
@@ -472,9 +471,9 @@ class Cart
      *
      * @return Item
      */
-    protected function insertRow($rawId, $id, $name, $qty, $price, $attributes = [])
+    protected function insertRow($rawId, $product_id, $name, $qty, $price, $parent_id, $attributes = [])
     {
-        $newRow = $this->makeRow($rawId, $id, $name, $qty, $price, $attributes);
+        $newRow = $this->makeRow($rawId, $product_id, $name, $qty, $price, $parent_id, $attributes);
 
         $cart = $this->getCart();
 
@@ -497,16 +496,17 @@ class Cart
      *
      * @return Item
      */
-    protected function makeRow($rawId, $id, $name, $qty, $price, array $attributes = [])
+    protected function makeRow($rawId, $product_id, $name, $qty, $price, $parent_id, array $attributes = [])
     {
         return new Item(array_merge([
             '__raw_id' => $rawId,
-            'id' => $id,
+            'product_id' => $product_id,
             'name' => $name,
             'qty' => $qty,
             'price' => $price,
             'total' => $qty * $price,
             '__model' => $this->model,
+            'parent_id' => $parent_id,
         ], $attributes));
     }
 

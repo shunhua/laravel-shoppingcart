@@ -29,7 +29,7 @@ class DatabaseStorage implements Storage
     /**
      * @var array
      */
-    private $filed = ['__raw_id', 'id', 'name', 'qty', 'price', 'total', '__model', 'type', 'status'];
+    private $filed = ['__raw_id', 'product_id', 'name', 'qty', 'price', 'total', '__model', 'type', 'status', 'parent_id'];
 
     /**
      * @param $key
@@ -76,14 +76,13 @@ class DatabaseStorage implements Storage
     public function get($key, $default = null)
     {
         $items = DB::table($this->table)->where('key', $key)->get();
-
         $items = $items->toArray();
         $collection = [];
         foreach ($items as $item) {
             $item = json_decode(json_encode($item), true);
-            $attr = json_decode($item['attributes'], true);
-            $item = Arr::only($item, $this->filed);
-            $item = array_merge($item, $attr);
+            // $attr = json_decode($item['attributes'], true);
+            // $item = Arr::only($item, $this->filed);
+            // $item = array_merge($item, $attr);
             $collection[$item['__raw_id']] = new Item($item);
         }
 
